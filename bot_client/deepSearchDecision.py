@@ -72,12 +72,12 @@ class DeepDecisionModule:
         self.state.update(messageBytes,True)
 
     def _send_command_message_to_target(self, direction):
-        # self.state.queueAction(4,direction)
-        self.connection.send(ServerMessage(D_MESSAGES[direction], 4).getBytes())
+        self.state.queueAction(2,direction)
+        # self.connection.send(ServerMessage(D_MESSAGES[direction], 4).getBytes())
 
     def _send_stop_command(self):
-        #self.state.queueAction(4,Directions.NONE)
-        self.connection.send(ServerMessage(D_MESSAGES[4], 4).getBytes())
+        self.state.queueAction(2,Directions.NONE)
+        #self.connection.send(ServerMessage(D_MESSAGES[4], 4).getBytes())
 
     def _send_socket_command_to_target(self, p_loc, target):
         direction = self._get_direction(p_loc, target)
@@ -174,7 +174,7 @@ class DeepDecisionModule:
                 self.depth = self.state.numPellets() - 1
             targets = [(p_loc.col,p_loc.row), (p_loc.col-1, p_loc.row), (p_loc.col+1, p_loc.row), (p_loc.col, p_loc.row+1), (p_loc.col, p_loc.row - 1)]
             directions =  [Directions.NONE, Directions.LEFT, Directions.RIGHT, Directions.DOWN, Directions.UP]
-            action_scores = []
+            action_scores = [-float('inf'),-float('inf'),-float('inf'),-float('inf'),-float('inf')]
 
             curr_time = time.time()
 
@@ -186,17 +186,19 @@ class DeepDecisionModule:
                 sim_state.update(self.state.serialize(),True)
                 #simulated_state = copy.deepcopy(self.state)
                 alive = sim_state.simulateAction(TICK_ESTIMATE_BY_LEVEL[self.state.currLevel - 1],directions[i])
-                action_scores.append(self.deepSearch(0, sim_state))
+                action_scores[i] = self.deepSearch(0, sim_state)
                 
 
             max_action = max(action_scores)
             max_indices = [index for index in range(len(action_scores)) if action_scores[index] == max_action]
             chosenIndex = max_indices[-1]
 
-            print(time.time() - curr_time)
+            #print(time.time() - curr_time)
 
             next_loc = targets[chosenIndex]
-            print(directions[chosenIndex])
+            # print(directions[chosenIndex])
+            # print(action_scores)
+            # print(f"{self.state.pacmanLoc.col},{self.state.pacmanLoc.row}")
             if next_loc != p_loc:
                 self._send_command_message_to_target(directions[chosenIndex])
                 #self._send_socket_command_to_target(p_loc, next_loc)
@@ -208,27 +210,28 @@ class DeepDecisionModule:
 		# Receive values as long as we have access
         resetted = False
         while self.state.isConnected():
-            self._update_game_state()
+            #self._update_game_state()
 			# If the current messages haven't been sent out yet, skip this iteration
-            # if len(self.state.writeServerBuf):
-            #     await asyncio.sleep(0)
-            #     continue
+            if len(self.state.writeServerBuf):
+                print("sending action")
+                await asyncio.sleep(0)
+                continue
             if not resetted:
                 print("reset")
                 #self.sock.send(b'r')
                 resetted = True
 
 			# Lock the game state
-            #self.state.lock()
+            self.state.lock()
 
-			# Write back to the server, as a test (move right)
+			# Write back to the server
             self.tick()
 
 			# Unlock the game state
-            # self.state.unlock()
+            self.state.unlock()
 
 			# Print that a decision has been made
 
 			#Free up the event loop
             
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.1)

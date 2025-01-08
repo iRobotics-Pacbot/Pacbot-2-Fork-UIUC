@@ -13,8 +13,6 @@ from websockets.typing import Data # type: ignore
 from gameState import GameState
 
 # Decision module
-from decisionModule import DecisionModule
-
 from deepSearchDecision import DeepDecisionModule
 
 # Server messages
@@ -90,7 +88,6 @@ class PacbotClient:
 			self.connection = connect(self.connectURL)
 			self._socketOpen = True
 			self.state.setConnectionStatus(True)
-			self.decisionModule.set_connection(self.connection)
 
 		# If the connection is refused, log and return
 		except ConnectionRefusedError:
@@ -142,8 +139,6 @@ class PacbotClient:
 
 				# Update the state, given this message from the server
 				self.state.update(messageBytes)
-
-				print(f"client:{self.state.pacmanLoc.col},{self.state.pacmanLoc.row}")
 
 				# Write a response back to the server if necessary
 				if self.state.writeServerBuf and self.state.writeServerBuf[0].tick():
