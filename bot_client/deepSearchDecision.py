@@ -77,12 +77,12 @@ class DeepDecisionModule:
         self.state.update(messageBytes, True)
 
     def _send_command_message_to_target(self, direction):
-        self.state.queueAction(2,direction)
+        self.state.queueAction(2, direction)
         # self.connection.send(ServerMessage(D_MESSAGES[direction], 4).getBytes())
 
     def _send_stop_command(self):
-        self.state.queueAction(2,Directions.NONE)
-        #self.connection.send(ServerMessage(D_MESSAGES[4], 4).getBytes())
+        self.state.queueAction(2, Directions.NONE)
+        # self.connection.send(ServerMessage(D_MESSAGES[4], 4).getBytes())
 
     def _send_socket_command_to_target(self, p_loc, target):
         direction = self._get_direction(p_loc, target)
@@ -95,6 +95,7 @@ class DeepDecisionModule:
                 direction = b"w"
             case Directions.RIGHT:
                 direction = b"e"
+        print("sending direction")
         self.sock.send(direction)
         print(direction)
 
@@ -210,7 +211,13 @@ class DeepDecisionModule:
                 Directions.DOWN,
                 Directions.UP,
             ]
-            action_scores = [-float('inf'),-float('inf'),-float('inf'),-float('inf'),-float('inf')]
+            action_scores = [
+                -float("inf"),
+                -float("inf"),
+                -float("inf"),
+                -float("inf"),
+                -float("inf"),
+            ]
 
             curr_time = time.time()
 
@@ -225,7 +232,6 @@ class DeepDecisionModule:
                     TICK_ESTIMATE_BY_LEVEL[self.state.currLevel - 1], directions[i]
                 )
                 action_scores[i] = self.deepSearch(0, sim_state)
-               
 
             max_action = max(action_scores)
             max_indices = [
@@ -235,7 +241,7 @@ class DeepDecisionModule:
             ]
             chosenIndex = max_indices[-1]
 
-            #print(time.time() - curr_time)
+            # print(time.time() - curr_time)
 
             next_loc = targets[chosenIndex]
             # print(directions[chosenIndex])
@@ -252,8 +258,8 @@ class DeepDecisionModule:
         # Receive values as long as we have access
         resetted = False
         while self.state.isConnected():
-            #self._update_game_state()
-			# If the current messages haven't been sent out yet, skip this iteration
+            # self._update_game_state()
+            # If the current messages haven't been sent out yet, skip this iteration
             if len(self.state.writeServerBuf):
                 print("sending action")
                 await asyncio.sleep(0)
@@ -262,13 +268,13 @@ class DeepDecisionModule:
                 print("reset")
                 # self.sock.send(b'r')
                 resetted = True
-			# Lock the game state
+            # Lock the game state
             self.state.lock()
 
-			# Write back to the server
+            # Write back to the server
             self.tick()
 
-			# Unlock the game state
+            # Unlock the game state
             self.state.unlock()
 
             # Print that a decision has been made

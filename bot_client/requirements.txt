@@ -1,1 +1,2 @@
-websockets==11.0.3
+numpy==2.2.1
+websockets==14.1
