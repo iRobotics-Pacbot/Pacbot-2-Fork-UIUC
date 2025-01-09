@@ -40,12 +40,12 @@ for col in range(28):
 
 
 class DeepDecisionModule:
-    def __init__(self, state: GameState) -> None:
+    def __init__(self, state: GameState, depth: int) -> None:
         # Game state object to store the game information
         self.state = state
         # self.sock = socket.socket()
         # self.sock.connect(("192.168.0.100",1337))
-        self.depth = 6
+        self.depth = depth
 
     def set_connection(self, connection: ClientConnection):
         self.connection = connection

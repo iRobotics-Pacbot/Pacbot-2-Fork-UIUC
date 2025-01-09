@@ -57,7 +57,9 @@ class PacbotClient:
         self.state: GameState = GameState()
 
         # Decision module (policy) to make high-level decisions
-        self.decisionModule: DeepDecisionModule = DeepDecisionModule(self.state)
+        self.decisionModule: DeepDecisionModule = DeepDecisionModule(
+            self.state, int(sys.argv[3])
+        )
 
     async def run(self) -> None:
         """
@@ -167,4 +169,3 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(main())
     loop.run_forever()
-
