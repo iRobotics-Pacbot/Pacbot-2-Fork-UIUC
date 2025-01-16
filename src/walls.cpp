@@ -1,5 +1,6 @@
 #include "walls.hpp"
 #include <array>
+#include <cstdint>
 
 const static std::array<uint32_t, 31> WALLS{
     0b00001111111111111111111111111111, 0b00001000000000000110000000000001,

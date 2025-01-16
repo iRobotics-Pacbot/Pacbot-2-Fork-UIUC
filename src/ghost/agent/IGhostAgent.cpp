@@ -1,6 +1,7 @@
 #include "ghost/agent/IGhostAgent.hpp"
 #include "GameState.hpp"
 #include "Location.hpp"
+#include "ghost/Ghost.hpp"
 #include "walls.hpp"
 #include <cmath>
 #include <limits>
@@ -52,4 +53,10 @@ Directions IGhostAgent::guessMove(const GameState &gameState,
 
   // Check to see if the ghost should be running away
   return ghost.isFreightened() ? maxDirection : minDirection;
+}
+
+void IGhostAgent::move(GameState &state, Ghost &ghost) {
+  if (ghost.isSpawning()) {
+    return;
+  }
 }
