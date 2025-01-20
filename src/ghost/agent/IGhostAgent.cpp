@@ -1,13 +1,14 @@
 #include "ghost/agent/IGhostAgent.hpp"
 #include "GameState.hpp"
 #include "Location.hpp"
+#include "delta/GhostPlanDelta.hpp"
 #include "ghost/Ghost.hpp"
 #include "walls.hpp"
 #include <cmath>
 #include <limits>
 
-Directions IGhostAgent::guessMove(const GameState &gameState,
-                                  const Ghost &ghost) const {
+std::unique_ptr<IDelta> IGhostAgent::guessMove(const GameState &gameState,
+                                               const Ghost &ghost) {
   // Calculate the next position (Note that this is recalculated when getting
   // the target)
   int nextRow = ghost.location.getRow() + ghost.location.getRowDir();
@@ -52,7 +53,8 @@ Directions IGhostAgent::guessMove(const GameState &gameState,
   }
 
   // Check to see if the ghost should be running away
-  return ghost.isFreightened() ? maxDirection : minDirection;
+  Directions newPlan = ghost.isFreightened() ? maxDirection : minDirection;
+  return std::make_unique<GhostPlanDelta>(this, newPlan, plannedDirection);
 }
 
 void IGhostAgent::move(GameState &state, Ghost &ghost) {

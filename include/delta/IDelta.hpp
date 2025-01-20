@@ -1,8 +1,12 @@
 #pragma once
-#include "GameState.hpp"
 
+/**
+ * @class IDelta
+ * @brief Represents a delta to the game
+ *
+ */
 struct IDelta {
-  virtual ~IDelta() = 0;
-  virtual void perform(GameState &gameState) const;
-  virtual void undo(GameState &gameState) const;
+  virtual ~IDelta() = default;
+  virtual void perform() const = 0;
+  virtual void undo() const = 0;
 };

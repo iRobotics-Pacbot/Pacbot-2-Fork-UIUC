@@ -6,6 +6,6 @@ struct GhostDelta : public IDelta {
   Location previousLocation, newLocation;
   GhostColors ghost;
 
-  void perform(GameState &gameState) const override;
-  void undo(GameState &gameState) const override;
+  void perform() const override;
+  void undo() const override;
 };
