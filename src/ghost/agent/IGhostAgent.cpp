@@ -1,6 +1,7 @@
 #include "ghost/agent/IGhostAgent.hpp"
 #include "GameState.hpp"
 #include "Location.hpp"
+#include "delta/GhostMoveDelta.hpp"
 #include "delta/GhostPlanDelta.hpp"
 #include "ghost/Ghost.hpp"
 #include "walls.hpp"
@@ -57,8 +58,9 @@ std::unique_ptr<IDelta> IGhostAgent::guessMove(const GameState &gameState,
   return std::make_unique<GhostPlanDelta>(this, newPlan, plannedDirection);
 }
 
-void IGhostAgent::move(GameState &state, Ghost &ghost) {
+std::unique_ptr<IDelta> IGhostAgent::move(GameState &state, Ghost &ghost) {
   if (ghost.isSpawning()) {
-    return;
+    return nullptr;
   }
+  return std::make_unique<GhostMoveDelta>(this, )
 }

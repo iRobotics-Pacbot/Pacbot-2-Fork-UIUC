@@ -17,6 +17,15 @@ void GameAgent::step(int numTicks, Directions pacmanDirection) {
   }
 
   for (int tick = 1; tick <= numTicks; tick++) {
+    if ((gameState.currTicks + tick) % gameState.updatePeriod) {
+      continue;
+    }
+
+    for (int i = 0; i < ghostAgents.size(); i++) {
+      std::unique_ptr<IGhostAgent> &ghostAgent = ghostAgents[i];
+      Ghost &ghost = gameState.ghosts[i];
+      perform(ghostAgent->move(gameState, ghost));
+    }
   }
 }
 
@@ -37,6 +46,8 @@ void GameAgent::undo() {
 }
 
 void GameAgent::perform(std::unique_ptr<IDelta> &&delta) {
-  delta->perform();
-  deltas.push(delta);
+  if (delta) {
+    delta->perform();
+    deltas.push(delta);
+  }
 }

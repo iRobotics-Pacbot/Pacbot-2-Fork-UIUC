@@ -35,7 +35,8 @@ public:
    *
    * @param gameState The game state
    * @param ghost The ghost to act upon
+   * @return The delta for moving
    */
-  void move(GameState &gameState, Ghost &ghost);
+  std::unique_ptr<IDelta> move(GameState &gameState, Ghost &ghost);
   Directions plannedDirection;
 };
