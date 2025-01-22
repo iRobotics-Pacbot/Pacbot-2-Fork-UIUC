@@ -1,7 +1,10 @@
 #pragma once
 #include "GameState.hpp"
 #include "delta/IDelta.hpp"
+#include "ghost/agent/CyanGhostAgent.hpp"
 #include "ghost/agent/IGhostAgent.hpp"
+#include "ghost/agent/OrangeGhostAgent.hpp"
+#include "ghost/agent/PinkGhostAgent.hpp"
 #include "ghost/agent/RedGhostAgent.hpp"
 #include <memory>
 #include <stack>
@@ -28,9 +31,9 @@ private:
 public:
   GameAgent()
       : ghostAgents{std::make_unique<RedGhostAgent>(),
-                    std::make_unique<RedGhostAgent>(),
-                    std::make_unique<RedGhostAgent>(),
-                    std::make_unique<RedGhostAgent>()} {};
+                    std::make_unique<PinkGhostAgent>(),
+                    std::make_unique<CyanGhostAgent>(),
+                    std::make_unique<OrangeGhostAgent>()} {};
   /**
    * @brief Updates the game based on the direction the pacman moves
    *
@@ -49,10 +52,4 @@ public:
    * @param gameState The game state to copy
    */
   void update(const GameState &gameState);
-  /**
-   * @brief Moves the game state into the internal game state
-   *
-   * @param gameState The game state to move
-   */
-  void update(GameState &&gameState);
 };

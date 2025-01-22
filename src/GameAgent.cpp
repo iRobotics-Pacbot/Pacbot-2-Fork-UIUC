@@ -1,4 +1,5 @@
 #include "GameAgent.hpp"
+#include "GameState.hpp"
 #include "Location.hpp"
 #include <memory>
 
@@ -50,4 +51,8 @@ void GameAgent::perform(std::unique_ptr<IDelta> &&delta) {
     delta->perform();
     deltas.push(delta);
   }
+}
+
+void GameAgent::update(const GameState &gameState) {
+  this->gameState = gameState;
 }
