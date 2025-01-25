@@ -1,7 +1,10 @@
 #include "GameAgent.hpp"
+
+#include <memory>
+#include <vector>
+
 #include "GameState.hpp"
 #include "Location.hpp"
-#include <memory>
 
 void GameAgent::step(int numTicks, Directions pacmanDirection) {
   // Store the index of the last version
@@ -55,4 +58,30 @@ void GameAgent::perform(std::unique_ptr<IDelta> &&delta) {
 
 void GameAgent::update(const GameState &gameState) {
   this->gameState = gameState;
+}
+
+GameAgent &GameAgent::operator=(const GameAgent &other) {
+  // Guard self assignment
+  if (this == &other) return *this;
+
+  this->gameState = other.gameState;
+  std::stack<std::unique_ptr<IDelta>> d_stack = other.deltas;
+  std::vector<std::unique_ptr<IDelta>> new_deltas;
+  while(!d_stack.empty()) {
+    std::unique_ptr<IDelta>& old_d = d_stack.top();
+    d_stack.pop();
+    new_deltas.push_back(old_d->clone());
+  }
+  while(!(this->deltas.empty())) {
+    this->deltas.top().reset();
+    this->deltas.pop();
+  }
+  for(unsigned int i = new_deltas.size() - 1; i >= 0; i--) {
+    this->deltas.push(new_deltas[i]);
+  }
+  for(unsigned int i = 0; i < 4; i++) {
+    this->ghostAgents[i].reset();
+    this->ghostAgents[i] = other.ghostAgents[i]->clone();
+  }
+  return *this;
 }

@@ -52,4 +52,5 @@ public:
    * @param gameState The game state to copy
    */
   void update(const GameState &gameState);
+  GameAgent& operator=(const GameAgent& other);
 };

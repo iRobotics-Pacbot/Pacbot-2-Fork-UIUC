@@ -7,3 +7,4 @@ compile_commands.json
 *.exe
 /web_client/node_modules
 /web_client/dist
+/.vscode

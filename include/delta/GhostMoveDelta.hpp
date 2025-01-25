@@ -16,4 +16,5 @@ public:
         previousLocation{previousLocation} {}
   void perform() const override;
   void undo() const override;
+  std::unique_ptr<IDelta> clone() const override;
 };
