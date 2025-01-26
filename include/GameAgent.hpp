@@ -16,7 +16,6 @@
  */
 class GameAgent {
 private:
-  GameState gameState;
   /**
    * @brief Stores the series of deltas that led to this gameState
    */
@@ -29,6 +28,7 @@ private:
   void perform(std::unique_ptr<IDelta> &&action);
 
 public:
+  GameState gameState;
   GameAgent()
       : ghostAgents{std::make_unique<RedGhostAgent>(),
                     std::make_unique<PinkGhostAgent>(),

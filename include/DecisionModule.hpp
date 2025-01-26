@@ -12,6 +12,6 @@ class DecisionModule {
  private:
   GameAgent _agent;
   int _depthLimit;
-  int evaluateState(GameAgent currAgent);
-  int deepSearch(int depth, GameAgent currAgent);
+  int evaluateState(GameAgent& currAgent);
+  int deepSearch(int depth, GameAgent& currAgent);
 };
